@@ -71,7 +71,7 @@ cm = confusion_matrix(y_test, y_pred)
 # 3. Plot it
 disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=['Died', 'Survived'])
 disp.plot(cmap='Blues')
-plt.show()
+#plt.show()
 
 
 from sklearn.preprocessing import StandardScaler
@@ -87,8 +87,45 @@ cm_scaled = confusion_matrix(y_test, y_pred_scaled)
 disp_scaled = ConfusionMatrixDisplay(confusion_matrix=cm_scaled, display_labels=['Died', 'Survived'])
 
 disp_scaled.plot(cmap='Greens')
-plt.show()
+#plt.show()
 
 # Show the new weights for the SCALED model
 weights_scaled = pd.DataFrame({'Feature': X.columns, 'Weight': model_scaled.coef_[0]})
-print(weights_scaled.sort_values(by='Weight', ascending=False))``
+print(weights_scaled.sort_values(by='Weight', ascending=False))
+
+
+# use randomforestclassifier to do complex if/else splits and see if we can get better accuracy than logistic regression
+
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score, confusion_matrix, ConfusionMatrixDisplay
+import matplotlib.pyplot as plt
+
+# 1. Instantiate the "Forest" (n_estimators = 100 decision trees)
+rf_model = RandomForestClassifier(n_estimators=100, random_state=42)
+
+# 2. Train the model (Notice we are using the original, unscaled X_train)
+rf_model.fit(X_train, y_train)
+
+# 3. Predict on the test set
+rf_pred = rf_model.predict(X_test)
+
+# 4. Check the new Accuracy
+rf_accuracy = accuracy_score(y_test, rf_pred)
+print(f"Random Forest Accuracy: {rf_accuracy * 100:.2f}%")
+
+# 5. Show the new Confusion Matrix
+cm_rf = confusion_matrix(y_test, rf_pred)
+disp_rf = ConfusionMatrixDisplay(confusion_matrix=cm_rf, display_labels=['Died', 'Survived'])
+disp_rf.plot(cmap='Purples')
+plt.title("Random Forest Confusion Matrix")
+plt.show()
+
+# 1. Extract the importance scores from the model
+importances = rf_model.feature_importances_
+
+# 2. Match them to your column names
+forest_weights = pd.DataFrame({'Feature': X_train.columns, 'Importance': importances})
+
+# 3. Sort them from lowest to highest for the chart
+print(forest_weights.sort_values(by='Importance', ascending=True))
+

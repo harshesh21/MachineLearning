@@ -1,0 +1,6 @@
+# Ignore machine learning models
+*.pkl
+optimized_real_estate_model.pkl
+
+# Ignore datasets
+*.csv

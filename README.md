@@ -35,6 +35,26 @@ The system is deployed as a REST API using FastAPI and includes a lightweight HT
 ├── houston_scaler.bin         # Scikit-Learn standard scaler
 └── houston_features.bin       # List of the 123 training columns
 ```
+🌍 Adapting for a Different Market (Custom Training)
+This pipeline is modular. If you want to predict prices for a different city (e.g., Austin, TX, or Miami, FL), you can retrain the models from scratch using your own data.
+
+1. Download the Raw Data
+Use the included utility script to authenticate with the Kaggle API and download the latest USA Real Estate dataset.
+
+Bash
+python utils/download_kaggle_dataset.py
+2. Filter the Target Market
+Open the training script (train.py). Locate the Pandas filtering step and change the target city/state from Houston to your desired market.
+
+3. Train the Models and Generate Artifacts
+Run the training pipeline. This will process the new CSV, scale the features, train the deep learning and XGBoost models, and automatically export the required production files.
+
+Bash
+python train.py
+(This will generate fresh .pth, .json, and .bin files tailored to your new market).
+
+4. Update API Business Logic
+Open main.py and update the median injection defaults (e.g., acre_lot and year_built) to reflect the realistic averages of your new city. Update index.html to reflect a valid default zip code for the new area.
 
 ## Running the Application
 

@@ -1,11 +1,13 @@
-Here is the complete `README.md` file for your repository. It covers the architecture, the models used, and the exact steps for another developer to run the project using either standard Python or Docker.
+Here is the updated, complete `README.md`. I have added a new section titled **"Adapting for a Different Market (Custom Training)"** that breaks down the exact pipeline steps for downloading new data, retraining the models, and generating the necessary PyTorch and XGBoost files.
+
+You can copy and paste this directly over your current file.
 
 ***
 
-# Houston Real Estate AI Engine
+# Real Estate AI Pricing Engine
 
 ## Overview
-This project is an end-to-end Machine Learning pipeline that predicts real estate prices in the Houston, Texas area. It takes basic property specifications (Bedrooms, Bathrooms, Square Footage, and Zip Code) and processes them through an ensemble deep learning architecture to output an estimated market value.
+This project is an end-to-end Machine Learning pipeline that predicts real estate prices. Originally trained on the Houston, Texas market, it takes basic property specifications (Bedrooms, Bathrooms, Square Footage, and Zip Code) and processes them through an ensemble deep learning architecture to output an estimated market value.
 
 The system is deployed as a REST API using FastAPI and includes a lightweight HTML/JS frontend for easy interaction. It is fully containerized using Docker for seamless cross-platform deployment.
 
@@ -17,7 +19,7 @@ The system is deployed as a REST API using FastAPI and includes a lightweight HT
 * **Deployment:** Docker
 
 ## Architecture
-1. **The Data:** Trained on the Kaggle USA Real Estate Dataset, specifically filtered for the Houston market. Categorical variables (Zip Codes) were one-hot encoded, resulting in a 123-column sparse feature matrix.
+1. **The Data:** Trained on the Kaggle USA Real Estate Dataset. Categorical variables (Zip Codes) are one-hot encoded, resulting in a sparse feature matrix.
 2. **The Ensemble Model:**
    * **PyTorch Neural Network:** A 4-layer feedforward network (128 -> 64 -> 32 -> 1) trained with Huber Loss and Adam optimizer. Dropout layers (10%) were utilized to prevent overfitting.
    * **XGBoost:** A gradient-boosted tree model to capture non-linear geographical splits.
@@ -30,31 +32,36 @@ The system is deployed as a REST API using FastAPI and includes a lightweight HT
 ├── index.html                 # Frontend user interface
 ├── requirements.txt           # Python dependencies
 ├── Dockerfile                 # Docker build instructions
-├── houston_nn_weights.pth     # Trained PyTorch model weights (CPU-mapped)
-├── houston_xgb_model.json     # Trained XGBoost model
-├── houston_scaler.bin         # Scikit-Learn standard scaler
-└── houston_features.bin       # List of the 123 training columns
+├── utils/
+│   └── download_kaggle_dataset.py # Script to pull fresh data via Kaggle API
+├── train.py                   # Script to clean data and train the models
+├── nn_weights.pth             # Trained PyTorch model weights (CPU-mapped)
+├── xgb_model.json             # Trained XGBoost model
+├── scaler.bin                 # Scikit-Learn standard scaler
+└── features.bin               # List of the required training columns
 ```
-🌍 Adapting for a Different Market (Custom Training)
+
+## 🌍 Adapting for a Different Market (Custom Training)
 This pipeline is modular. If you want to predict prices for a different city (e.g., Austin, TX, or Miami, FL), you can retrain the models from scratch using your own data.
 
-1. Download the Raw Data
+**1. Download the Raw Data**
 Use the included utility script to authenticate with the Kaggle API and download the latest USA Real Estate dataset.
-
-Bash
+```bash
 python utils/download_kaggle_dataset.py
-2. Filter the Target Market
-Open the training script (train.py). Locate the Pandas filtering step and change the target city/state from Houston to your desired market.
+```
 
-3. Train the Models and Generate Artifacts
+**2. Filter the Target Market**
+Open the training script (`train.py`). Locate the Pandas filtering step and change the target city/state from `Houston` to your desired market. 
+
+**3. Train the Models and Generate Artifacts**
 Run the training pipeline. This will process the new CSV, scale the features, train the deep learning and XGBoost models, and automatically export the required production files.
-
-Bash
+```bash
 python train.py
-(This will generate fresh .pth, .json, and .bin files tailored to your new market).
+```
+*(This will generate fresh `.pth`, `.json`, and `.bin` files tailored to your new market).*
 
-4. Update API Business Logic
-Open main.py and update the median injection defaults (e.g., acre_lot and year_built) to reflect the realistic averages of your new city. Update index.html to reflect a valid default zip code for the new area.
+**4. Update API Business Logic**
+Open `main.py` and update the median injection defaults (e.g., `acre_lot` and `year_built`) to reflect the realistic averages of your new city. Update `index.html` to reflect a valid default zip code for the new area.
 
 ## Running the Application
 
@@ -67,11 +74,11 @@ Running the app via Docker ensures you do not run into Python versioning or depe
 2. Open your terminal in the project directory.
 3. Build the container image:
    ```bash
-   docker build -t houston-ml-engine .
+   docker build -t real-estate-ml-engine .
    ```
 4. Run the container:
    ```bash
-   docker run -p 8000:8000 houston-ml-engine
+   docker run -p 8000:8000 real-estate-ml-engine
    ```
 5. Open `index.html` in any web browser to use the graphical interface, or navigate to `http://localhost:8000/docs` to use the interactive FastAPI Swagger UI.
 
@@ -116,4 +123,4 @@ You can query the prediction endpoint programmatically.
   "predicted_price": 389896.90
 }
 ```
-*(If a zip code is provided that was not present in the training data, the API will return a warning flag and default to base market logic).*
+*(If a zip code is provided that was not present in the new training data, the API will return a warning flag and default to base market logic).*

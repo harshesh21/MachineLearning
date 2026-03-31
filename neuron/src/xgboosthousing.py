@@ -6,7 +6,7 @@ from xgboost import XGBRegressor
 from sklearn.metrics import mean_absolute_error
 
 # 1. Load and Filter Data
-raw_df = pd.read_csv('realtor-data.zip.csv')
+raw_df = pd.read_csv('../realtor-data.zip.csv')
 df = raw_df[(raw_df['city'] == 'Houston') & (raw_df['state'] == 'Texas')].copy()
 df.dropna(subset=['price', 'bed', 'bath', 'house_size', 'zip_code'], inplace=True)
 

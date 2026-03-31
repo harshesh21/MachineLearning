@@ -4,7 +4,7 @@ from sklearn.impute import SimpleImputer
 import numpy as np
 from matplotlib.axes import Axes
 
-df = pd.read_csv('Titanic-Dataset.csv')
+df = pd.read_csv('../../data/Titanic-Dataset.csv')
 # print()
 # print(f'-----------END OF HEAD -----------')
 # print(df.info())

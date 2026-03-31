@@ -1,8 +1,8 @@
 import os
 
 # SET YOUR CREDENTIALS HERE
-os.environ['KAGGLE_USERNAME'] = "francklayman@gmail.com"
-os.environ['KAGGLE_KEY'] = "KGAT_9676607a324b23174c120da3ba77b3fb"
+os.environ['KAGGLE_USERNAME'] = "your id"
+os.environ['KAGGLE_KEY'] = "your kaggle key"
 
 # Now import the API
 from kaggle.api.kaggle_api_extended import KaggleApi

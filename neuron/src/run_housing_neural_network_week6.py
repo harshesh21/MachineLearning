@@ -13,7 +13,7 @@ torch.manual_seed(42)
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 # Load Data
-raw_df = pd.read_csv('./realtor-data.zip.csv')
+raw_df = pd.read_csv('../realtor-data.zip.csv')
 df = raw_df[(raw_df['city'] == 'Houston') & (raw_df['state'] == 'Texas')].copy()
 
 # Drop rows with missing crucial info

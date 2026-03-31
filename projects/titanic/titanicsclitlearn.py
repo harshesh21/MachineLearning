@@ -8,7 +8,7 @@ from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 import matplotlib.pyplot as plt
 
 # 1. Load the dataf
-df =pd.read_csv('Titanic-Dataset.csv')
+df =pd.read_csv('../../data/Titanic-Dataset.csv')
 
 # 2. Drop columns that are "Noise" (Names and Ticket numbers don't help predict survival)
 df = df.drop(['PassengerId', 'Name', 'Ticket', 'Cabin'], axis=1)

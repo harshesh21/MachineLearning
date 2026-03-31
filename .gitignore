@@ -4,3 +4,4 @@ optimized_real_estate_model.pkl
 
 # Ignore datasets
 *.csv
+neuron/data
